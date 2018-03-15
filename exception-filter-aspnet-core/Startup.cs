@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ExceptionFilterAspNetCore
 {
@@ -9,7 +11,12 @@ namespace ExceptionFilterAspNetCore
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.Filters.Add(typeof(SomeExceptionFilter)));
+            services.AddMvc(options => options.Filters.Add(typeof(SomeExceptionFilter)))
+                .AddJsonOptions(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
 
             services.AddScoped<ISomeService, SomeService>();
 
